@@ -1,0 +1,26 @@
+services:
+  # Le service pour la base de données
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # Le service pour ton code NestJS
+  api:
+    build: .
+    container_name: nestjs_api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/blog_db
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
