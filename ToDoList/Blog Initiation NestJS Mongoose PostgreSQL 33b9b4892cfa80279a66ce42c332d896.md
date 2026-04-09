@@ -33,10 +33,10 @@ Développer une API REST complète pour une plateforme de blog avec authentifica
 
 ## Configuration (à faire au fur et à mesure)
 
-- [ ] Initialiser le projet NestJS avec TypeScript
-- [ ] Configurer MongoDB avec Mongoose
-- [ ] Configurer les variables d'environnement
-- [ ] Configurer Swagger UI à `/api`
+- [0] Initialiser le projet NestJS avec TypeScript
+- [0] Configurer MongoDB avec Mongoose
+- [0] Configurer les variables d'environnement
+- [0] Configurer Swagger UI à `/api`
 - [ ] Configurer RustFS pour le stockage S3-compatible
 - [ ] Configurer un module pour les requêtes API externes
 
@@ -46,10 +46,10 @@ Développer une API REST complète pour une plateforme de blog avec authentifica
 
 ### Gestion des Utilisateurs
 
-- [ ] Créer le module Users avec CRUD complet
-- [ ] Implémenter la validation de mot de passe fort
+- [0] Créer le module Users avec CRUD complet
+- [0] Implémenter la validation de mot de passe fort
 - [ ] Ajouter les endpoints (inscription, connexion, profil, liste utilisateurs pour admin, modification et suppression)
-- [ ] Protéger les routes avec JWT et contrôle d'accès basé sur les rôles
+- [0] Protéger les routes avec JWT et contrôle d'accès basé sur les rôles
 
 ---
 

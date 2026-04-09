@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { LoginDto } from './dto/auth.login-dto';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../users/_utils/dto/receive/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -20,7 +20,7 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const payload = { sub: user._id, email: user.email };
+        const payload = { sub: user._id, email: user.email, role: user.role };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
@@ -31,8 +31,8 @@ export class AuthService {
         if (existingUser) {
             throw new ConflictException('Un utilisateur avec cet email existe déjà');
         }
-        const user = await this.usersService.create(createUserDto);
-        const payload = { sub: user._id, email: user.email };
+        const user = await this.usersService.createUser(createUserDto);
+        const payload = { sub: user._id, email: user.email, role: user.role };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
