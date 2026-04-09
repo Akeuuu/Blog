@@ -1,12 +1,18 @@
 services:
   # Le service pour la base de données
   mongodb:
-    image: mongo:latest
+    image: mongo:7.0
     container_name: mongodb_db
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   # Le service pour ton code NestJS
   api:
@@ -20,7 +26,8 @@ services:
     environment:
       - MONGO_URI=mongodb://mongodb:27017/blog_db
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
 volumes:
   mongo_data:

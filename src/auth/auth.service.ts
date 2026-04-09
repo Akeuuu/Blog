@@ -1,18 +1,40 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { signInDto } from './dto/auth.login-dto';
-import { UsersService } from 'src/users/users.service';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { LoginDto } from './dto/auth.login-dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService,
+    ) {}
 
-    async signIn(signInDto: signInDto): Promise<any> {
-        const user = await this.usersService.findByEmail(signInDto.email);
-        const hashedPassword = await this.usersService.hash(signInDto.password);
-        if (!user || hashedPassword !== user.password) {
-            throw new UnauthorizedException();
+    async signIn(loginDto: LoginDto): Promise<{ access_token: string }> {
+        const user = await this.usersService.findByEmail(loginDto.email);
+        if (!user) {
+            throw new UnauthorizedException('Invalid credentials');
         }
+        const isPasswordValid = await this.usersService.comparePassword(loginDto.password, user.password);
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+        const payload = { sub: user._id, email: user.email };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
+    }
 
-        return result;
+    async register(createUserDto: CreateUserDto): Promise<{ access_token: string }> {
+        const existingUser = await this.usersService.findByEmail(createUserDto.email);
+        if (existingUser) {
+            throw new ConflictException('Un utilisateur avec cet email existe déjà');
+        }
+        const user = await this.usersService.create(createUserDto);
+        const payload = { sub: user._id, email: user.email };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
     }
 }

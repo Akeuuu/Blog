@@ -12,7 +12,7 @@ export class UserRepository {
     }
 
     async findUser(email: string): Promise<User | null> {
-        const user = await this.userModel.findOne({ email }).exec();
+        const user = await this.userModel.findOne({ email }).select('+password').exec();
         return user;
     }
 
