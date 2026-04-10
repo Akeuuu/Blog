@@ -49,8 +49,6 @@ Développer une API REST complète pour une plateforme de blog avec authentifica
 - [0] Créer le module Users avec CRUD complet
 - [0] Implémenter la validation de mot de passe fort
 - [ ] Ajouter les endpoints (inscription, connexion, profil, liste utilisateurs pour admin, modification et suppression)
-- [0] Protéger les routes avec JWT et contrôle d'accès basé sur les rôles
-
 ---
 
 ## Gestion du Contenu

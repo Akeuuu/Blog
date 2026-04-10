@@ -28,6 +28,31 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+  
+  rustfs_perms:
+    image: alpine
+    user: root
+    volumes:
+      - /mnt/rustfs/data:/fix_path
+    command: chown -R 10001:10001 /fix_path
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: rustfs-server
+    depends_on:
+      rustfs_perms:
+        condition: service_completed_successfully
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # Console Web
+    environment:
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+      - RUSTFS_CONSOLE_ENABLE=true
+    volumes:
+      - /mnt/rustfs/data:/data
+    command: ["--address", ":9000", "--console-enable", "/data"]
+    restart: unless-stopped
 
 volumes:
   mongo_data:
