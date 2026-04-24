@@ -20,7 +20,7 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const payload = { sub: user._id, email: user.email, role: user.role };
+        const payload = { sub: user.id, email: user.email, role: user.role };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
@@ -32,7 +32,7 @@ export class AuthService {
             throw new ConflictException('Un utilisateur avec cet email existe déjà');
         }
         const user = await this.usersService.createUser(createUserDto);
-        const payload = { sub: user._id, email: user.email, role: user.role };
+        const payload = { sub: user.id, email: user.email, role: user.role };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };

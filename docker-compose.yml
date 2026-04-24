@@ -1,14 +1,18 @@
 services:
   # Le service pour la base de données
-  mongodb:
-    image: mongo:7.0
-    container_name: mongodb_db
+  postgres:
+    image: postgres:17
+    container_name: postgres_db
     ports:
-      - "27017:27017"
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: asso_db
     volumes:
-      - mongo_data:/data/db
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d asso_db"]
       interval: 5s
       timeout: 10s
       retries: 5
@@ -19,15 +23,15 @@ services:
     build: .
     container_name: nestjs_api
     ports:
-      - "3000:3000"
+      - "4040:4040"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/blog_db
+      - DATABASE_URL=postgresql://admin:admin@postgres:5432/asso_db?schema=public
     depends_on:
-      mongodb:
+      postgres:
         condition: service_healthy
 
 volumes:
-  mongo_data:
+  pg_data:
